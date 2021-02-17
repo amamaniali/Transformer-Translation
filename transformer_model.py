@@ -19,7 +19,7 @@ from decoder import Decoder
 from nltk.translate.bleu_score import corpus_bleu
 
 os.environ['CUDA_VISIBLE_DEVICES'] = "0"
-config = tf.ConfigProto()
+config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True
 
 
@@ -42,12 +42,12 @@ class Model(object):
         self.warmup_steps = warmup_steps
         
         # Placeholder for Encoder
-        self.x = tf.placeholder(dtype=tf.int32, shape=(None, max_enc_len))
-        self.x_len = tf.placeholder(dtype=tf.int32, shape=(None, ))
+        self.x = tf.compat.v1.placeholder(dtype=tf.int32, shape=(None, max_enc_len))
+        self.x_len = tf.compat.v1.placeholder(dtype=tf.int32, shape=(None, ))
         # Placeholder for Decoder
-        self.y = tf.placeholder(dtype=tf.int32, shape=(None, max_dec_len))
-        self.y_len = tf.placeholder(dtype=tf.int32, shape=(None, ))
-        self.dropout = tf.placeholder(dtype=tf.float32, shape=())
+        self.y = tf.compat.v1.placeholder(dtype=tf.int32, shape=(None, max_dec_len))
+        self.y_len = tf.compat.v1.placeholder(dtype=tf.int32, shape=(None, ))
+        self.dropout = tf.compat.v1.placeholder(dtype=tf.float32, shape=())
         
         self.data = Data(path='./vi2en', max_enc_len=max_enc_len, max_dec_len=max_dec_len)
         self.bos_idx = self.data.bos_idx ## beginning of sentence

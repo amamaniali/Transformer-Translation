@@ -77,7 +77,7 @@ def get_padding_bias(x):
   return attention_bias
 
 
-class LayerNormalization(tf.layers.Layer):
+class LayerNormalization(tf.compat.v1.layers.Layer):
   """Applies layer normalization."""
 
   def __init__(self, hidden_size):
