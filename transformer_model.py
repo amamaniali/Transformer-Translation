@@ -183,7 +183,7 @@ class Model(object):
                 max_seq_length = self.max_dec_len
 
             # Positional Encoding
-            with tf.variable_scope("positional-encoding"):
+            with tf.compat.v1.variable_scope("positional-encoding"):
                 positional_encoded = model_utils.get_position_encoding(max_seq_length,
                                                                        self.hidden_dim)
             batch_size = tf.shape(inputs)[0]
