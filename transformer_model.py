@@ -65,7 +65,7 @@ class Model(object):
         self.train_size = len(self.train_enc)
         self.test_size = len(self.test_enc)
         
-        train_dataset = tf.data.Dataset.from_tensor_slices((self.x, self.x_len, self.y, self.y_len))
+        train_dataset = tf.compat.v1.data.Dataset.from_tensor_slices((self.x, self.x_len, self.y, self.y_len))
         train_dataset = train_dataset.shuffle(self.train_size)
         train_dataset = train_dataset.batch(self.batch_size)
         train_dataset = train_dataset.repeat()
@@ -74,7 +74,7 @@ class Model(object):
         test_dataset = test_dataset.batch(self.batch_size)
         test_dataset = test_dataset.repeat()
         
-        iters = tf.data.Iterator.from_structure(train_dataset.output_types, train_dataset.output_shapes)
+        iters = tf.compat.v1.data.Iterator.from_structure(train_dataset.output_types, train_dataset.output_shapes)
         self.iter_x, self.iter_x_len, self.iter_y, self.iter_y_len = iters.get_next()
 
         # create the initialisation operations
@@ -84,7 +84,7 @@ class Model(object):
         ## Output
         encoder_outputs, decoder_inputs, train_prob = self.decoder_train(self.iter_x, self.iter_y)
         self.build_loss(train_prob)
-        self.global_step = tf.train.get_or_create_global_step()
+        self.global_step = tf.compat.v1.train.get_or_create_global_step()
         self.build_opt(self.global_step)
         
         self.pred_token = self.decoder_infer(self.iter_x)
@@ -173,9 +173,9 @@ class Model(object):
             
 
     def build_embed(self, inputs, encoder=True, reuse=False):
-        with tf.variable_scope("Embeddings", reuse=reuse, initializer=tf.contrib.layers.xavier_initializer()):
+        with tf.compat.v1.variable_scope("Embeddings", reuse=reuse, initializer=tf.contrib.layers.xavier_initializer()):
             # Word Embedding
-            self.shared_weights = tf.get_variable('shared_weights', [self.vocab, self.hidden_dim], dtype = tf.float32)            
+            self.shared_weights = tf.compat.v1.get_variable('shared_weights', [self.vocab, self.hidden_dim], dtype = tf.float32)            
             
             if encoder:
                 max_seq_length = self.max_enc_len
@@ -187,7 +187,7 @@ class Model(object):
                 positional_encoded = model_utils.get_position_encoding(max_seq_length,
                                                                        self.hidden_dim)
             batch_size = tf.shape(inputs)[0]
-            mask = tf.to_float(tf.not_equal(inputs, 0))
+            mask = tf.cast(tf.not_equal(inputs, 0))
             ## Add
             word_emb = tf.nn.embedding_lookup(self.shared_weights, inputs)   ## batch_size, length, dim
             word_emb *= tf.expand_dims(mask, -1) ## zeros out masked positions

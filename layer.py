@@ -41,7 +41,7 @@ class FFN:
                 # Flatten padding to [batch_size*length]
                 pad_mask = tf.reshape(padding, [-1])
         
-                nonpad_ids = tf.to_int32(tf.where(pad_mask < 1e-9))
+                nonpad_ids = tf.cast(tf.where(pad_mask < 1e-9))
         
                 # Reshape inputs to [batch_size*length, hidden_size] to remove padding
                 inputs = tf.reshape(inputs, [-1, self.w2_dim])

@@ -94,5 +94,5 @@ class LayerNormalization(tf.compat.v1.layers.Layer):
   def call(self, x, epsilon=1e-6):
     mean = tf.reduce_mean(x, axis=[-1], keepdims=True)
     variance = tf.reduce_mean(tf.square(x - mean), axis=[-1], keepdims=True)
-    norm_x = (x - mean) * tf.rsqrt(variance + epsilon)
+    norm_x = (x - mean) * tf.math.rsqrt(variance + epsilon)
     return norm_x * self.scale + self.bias
